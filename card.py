@@ -34,6 +34,9 @@ class Card:
     def isClubSuit(self):
         return self.suit == "Club"
 
+    def isFibonacciRank(self):
+        return self.rank in ['2', '3', '5', '8', 'A']
+
     def get_base_score(self):
         """ Devuelve el puntaje de la carta basado en su rango """
         return self.scores[self.rank]
