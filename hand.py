@@ -60,3 +60,9 @@ class HandToPlay():
 class HeldInHand():
     def __init__(self, cards: list[Card]):
         self.cards = cards
+
+    def all_spades_or_clubs(self):
+        for card in self.cards:
+            if not (card.isSpadeSuit() or card.isClubSuit()):
+                return False
+        return True
