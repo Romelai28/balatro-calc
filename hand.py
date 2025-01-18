@@ -51,6 +51,13 @@ class HandToPlay():
                 res.append(self.cards[i])
         return res
 
+
+    def increment_trigger_count_on_hand(self, condition):
+        for card in self.card_that_will_score():
+            if condition(card):
+                card.increment_trigger_count_on_hand()
+
+
     #def score_from_hand_type(self):
     #    if self.constainsFlushFive():
     #        self.score_flush_five()
@@ -74,3 +81,8 @@ class HeldInHand():
     def held_in_hand_habilities(self):
         for card in self.cards:
             card.trigger_on_held()
+
+    def increment_trigger_count_on_held(self, condition):
+        for card in self.cards:
+            if condition(card):
+                card.increment_trigger_count_on_held()

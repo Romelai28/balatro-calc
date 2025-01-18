@@ -38,6 +38,8 @@ class JokersClass:
     #    pass
 
 
+    ## TODO: Joker le dice a la mano: bindeate con estos efectos y condiciones
+    # La mano le dice a sus cartas bindeate con esos efectos y condiciones
     def bind_on_score_generic(self, condition, additional_code):
         bind_generic(target_objects=self.hand_to_play.card_that_will_score(),
                      condition=condition,
@@ -221,8 +223,7 @@ class JokerStencil(Parameterized_XMultJoker):
 #19
 class Mime(JokersClass):
     def add_retriggers(self):
-        for card in self.held_in_hand.cards:
-            card.increment_trigger_count_on_held
+        self.held_in_hand.increment_trigger_count_on_held(lambda card: True)
 
 #20
 class CreditCard(JokersClass):
@@ -269,8 +270,7 @@ class Dusk(JokersClass):
     """Retrigger all played cards in final hand of the round"""
     def add_retriggers(self):
         if self.game_info.isFinalHand():
-            for card in self.hand_to_play.card_that_will_score():
-                card.increment_trigger_count_on_hand()
+            self.hand_to_play.increment_trigger_count_on_hand(lambda card: True)
 
 #29
 
@@ -318,9 +318,7 @@ class DelayedGratification(JokersClass):
 class Hack(JokersClass):
     """Retrigger each played 2, 3, 4, or 5"""
     def add_retriggers(self):
-        for card in self.hand_to_play.card_that_will_score():
-            if card.is234or5Rank(): 
-                card.increment_trigger_count_on_hand()
+        self.hand_to_play.increment_trigger_count_on_hand(lambda card: card.is234or5Rank)
 
 
 #37
@@ -677,10 +675,9 @@ class Campfire(Parameterized_XMultJoker):
 
 #109
 class SockAndBuskin(JokersClass):
+    """Retrigger all played face cards"""
     def add_retriggers(self):
-        for card in self.hand_to_play.card_that_will_score():
-            if card.isFaceCard():
-                card.increment_trigger_count_on_hand()
+        self.hand_to_play.increment_trigger_count_on_hand(lambda card: card.isFaceCard)
 
 
 #110
@@ -714,6 +711,7 @@ class Throwback(Parameterized_XMultJoker):
 #115
 class HangingChad(JokersClass):
     """Retrigger first played card used in scoring 2 additional times"""
+    ## TODO: HACER QUE NO ROMPA EL ENCAPSULAMIENTO, necesito un mensaje que la carta sepa responder sobre si es la primera...
     def add_retriggers(self):
         first_card = self.hand_to_play.card_that_will_score()[0]
         for _ in range(2):
