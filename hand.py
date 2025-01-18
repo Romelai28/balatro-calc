@@ -68,3 +68,8 @@ class HeldInHand():
             if not (card.isSpadeSuit() or card.isClubSuit()):
                 return False
         return True
+    
+
+    def held_in_hand_habilities(self):
+        for card in self.cards:
+            card.trigger_on_held()

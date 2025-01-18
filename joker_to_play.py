@@ -15,6 +15,10 @@ class JokerToPlay:
     def bind_on_score(self):
         for joker in self.jokers_to_play:
             joker.bind_on_score()
+    
+    def bind_on_held(self):
+        for joker in self.jokers_to_play:
+            joker.bind_on_held()
 
     def add_retriggers(self):
         for joker in self.jokers_to_play:

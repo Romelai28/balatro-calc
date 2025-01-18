@@ -27,7 +27,7 @@ class JokersClass:
     def bind_on_score(self):
         pass
     
-    def on_held(self):
+    def bind_on_held(self):
         pass
     
     def trigger_independent(self):
@@ -53,6 +53,21 @@ class JokersClass:
                     return wrapper
 
                 card.trigger_on_scored_jokers = decorator(card.trigger_on_scored_jokers)
+    
+
+    def bind_on_held_generic(self, condition, codigo_a_agregar):
+        for card in self.held_in_hand.cards:
+            if condition(card):
+
+                def decorator(old_method_trigger_on_held):
+                    def wrapper():
+                        # Lineas antes
+                        old_method_trigger_on_held()
+                        # Lineas dps
+                        codigo_a_agregar()
+                    return wrapper
+
+                card.trigger_on_held_jokers = decorator(card.trigger_on_held_jokers)
 
 
 ## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.
@@ -219,8 +234,13 @@ class JokerStencil(Parameterized_XMultJoker):
 
 
 #18
-#19
 
+
+#19
+class Mime(JokersClass):
+    def add_retriggers(self):
+        for card in self.held_in_hand.cards:
+            card.increment_trigger_count_on_held
 
 #20
 class CreditCard(JokersClass):
@@ -268,7 +288,7 @@ class Dusk(JokersClass):
     def add_retriggers(self):
         if self.game_info.isFinalHand():
             for card in self.hand_to_play.card_that_will_score():
-                card.increment_trigger_count()
+                card.increment_trigger_count_on_hand()
 
 #29
 
@@ -318,7 +338,7 @@ class Hack(JokersClass):
     def add_retriggers(self):
         for card in self.hand_to_play.card_that_will_score():
             if card.is234or5Rank(): 
-                card.increment_trigger_count()
+                card.increment_trigger_count_on_hand()
 
 
 #37
@@ -469,7 +489,11 @@ class Vagabond(JokersClass):
 
 
 #72
-
+class Baron(JokersClass):
+    """Each King held in hand gives X1.5 Mult"""
+    def bind_on_held(self):
+        self.bind_on_held_generic(lambda card: card.isKingRank(),
+                                  lambda: self.scoreboard.times_mult(1.5))
 
 #73
 class Cloud9(JokersClass):
@@ -659,7 +683,7 @@ class SockAndBuskin(JokersClass):
     def add_retriggers(self):
         for card in self.hand_to_play.card_that_will_score():
             if card.isFaceCard():
-                card.increment_trigger_count()
+                card.increment_trigger_count_on_hand()
 
 
 #110
@@ -695,7 +719,7 @@ class HangingChad(JokersClass):
     """Retrigger first played card used in scoring 2 additional times"""
     def add_retriggers(self):
         first_card = self.hand_to_play.card_that_will_score()[0]
-        first_card.increment_trigger_count()
+        first_card.increment_trigger_count_on_hand()
 
 
 #116
@@ -818,6 +842,13 @@ class Satellite(JokersClass):
 
 
 #140
+class ShootTheMoon(JokersClass):
+    """Each Queen held in hand gives +13 Mult"""
+    def bind_on_held(self):
+        self.bind_on_held_generic(lambda card: card.isQueenRank(),
+                                  lambda: self.scoreboard.add_mult(13))
+
+
 #141
 
 

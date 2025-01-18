@@ -21,7 +21,8 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.scoreboard = scoreboard  # Pasamos la instancia de Balatro para acceder a los chips
-        self.number_of_triggers = 1
+        self.number_of_triggers_on_hand = 1
+        self.number_of_triggers_on_held = 1
 
     def isDiamondSuit(self):
         return self.suit == "Diamond"
@@ -88,8 +89,31 @@ class Card:
 
     def trigger_on_hand(self):
         """Trigguea todas las veces necesaria"""
-        for _ in range(self.number_of_triggers):
+        for _ in range(self.number_of_triggers_on_hand):
             self.trigger_one_time_on_hand()
 
-    def increment_trigger_count(self):
-        self.number_of_triggers += 1
+    def increment_trigger_count_on_hand(self):
+        self.number_of_triggers_on_hand += 1
+
+
+
+    def trigger_on_held_jokers(self):
+        """Aca se le va a bindear comportamiento de los jokers a las cartas para cuando se activen en mano."""
+        pass
+
+
+    def trigger_one_time_on_held(self):
+        # 4.1 Enhancement (Steel card)
+        # 4.2 On held jokers.
+        self.trigger_on_held_jokers()
+        
+        pass
+
+
+    def trigger_on_held(self):
+        for _ in range(self.number_of_triggers_on_held):
+            self.trigger_one_time_on_held()
+    
+
+    def increment_trigger_count_on_held(self):
+        self.number_of_triggers_on_held += 1
