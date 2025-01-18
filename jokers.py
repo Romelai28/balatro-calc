@@ -350,7 +350,15 @@ class Constellation(JokersClass):
 
 
 #56
+
+
+
 #57
+class FacelessJoker(JokersClass):
+    """Earn $5 if 3 or more face cards are discarded at the same time"""
+    pass
+
+
 #58
 #59
 #60
