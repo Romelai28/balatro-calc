@@ -1,4 +1,5 @@
 from score import Score
+from enhancements import *
 
 class Card:
     scores = {
@@ -17,24 +18,28 @@ class Card:
         'A': 11
     }
 
-    def __init__(self, suit: str, rank: str, scoreboard: Score):
+    def __init__(self, suit: str, rank: str, scoreboard: Score, enhancement: Enhancement = None):
         self.suit = suit
         self.rank = rank
-        self.scoreboard = scoreboard  # Pasamos la instancia de Balatro para acceder a los chips
+        if enhancement is None:
+            self.enhancement = BaseCard(scoreboard)
+        else:
+            self.enhancement = enhancement
+        self.scoreboard = scoreboard
         self.number_of_triggers_on_hand = 1
         self.number_of_triggers_on_held = 1
 
     def isDiamondSuit(self):
-        return self.suit == "Diamond"
+        return (self.suit == "Diamond" or self.enhancement.isWildCard()) and not self.enhancement.isStoneCard()
 
     def isHeartSuit(self):
-        return self.suit == "Heart"
+        return (self.suit == "Heart" or self.enhancement.isWildCard()) and not self.enhancement.isStoneCard()
 
     def isSpadeSuit(self):
-        return self.suit == "Spade"
+        return (self.suit == "Spade" or self.enhancement.isWildCard()) and not self.enhancement.isStoneCard()
 
     def isClubSuit(self):
-        return self.suit == "Club"
+        return (self.suit == "Club" or self.enhancement.isWildCard()) and not self.enhancement.isStoneCard()
 
     def isFibonacciRank(self):
         return self.rank in ['2', '3', '5', '8', 'A']
@@ -104,10 +109,14 @@ class Card:
 
     def trigger_one_time_on_held(self):
         # 4.1 Enhancement (Steel card)
+        self.trigger_on_held_enhancement()
         # 4.2 On held jokers.
         self.trigger_on_held_jokers()
-        
-        pass
+
+    
+    def trigger_on_held_enhancement(self):
+        # The only on_held enhancement up to date is steel card bonus.
+        self.enhancement.trigger_steel_bonus()
 
 
     def trigger_on_held(self):
