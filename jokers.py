@@ -392,7 +392,15 @@ class IceCream(Parameterized_ChipsJoker):
 
 #51
 #52
+
+
 #53
+class BlueJoker(Parameterized_ChipsJoker):
+    """+2 Chips for each remaining card in deck"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #54
 
 
@@ -406,7 +414,11 @@ class Constellation(Parameterized_XMultJoker):
 
 
 #56
-
+class Hiker(JokersClass):
+    """Every played card permanently gains +5 Chips when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: True,
+                                   lambda card: card.upgrade_from_hiker())
 
 
 #57
@@ -572,11 +584,14 @@ class LuckyCat(Parameterized_XMultJoker):
 
 
 #92
+
+
 #93
-class Bull(Parameterized_ChipsJoker):
+class Bull(JokersClass):
     """+2 Chips for each $1 you have"""
-    # SUPERCLASS RESPONSABILITY
-    pass
+    def trigger_independent(self):
+        chips = 2 * self.game_info.money
+        self.scoreboard.add_chips(chips)
 
 #94
 class DietCola(JokersClass):
@@ -701,8 +716,9 @@ class HangingChad(JokersClass):
     """Retrigger first played card used in scoring 2 additional times"""
     def add_retriggers(self):
         first_card = self.hand_to_play.card_that_will_score()[0]
-        first_card.increment_trigger_count_on_hand()
-
+        for _ in range(2):
+            first_card.increment_trigger_count_on_hand()
+        
 
 #116
 #117
@@ -853,10 +869,11 @@ class BurntJoker(JokersClass):
 
 
 #145
-class Bootstraps(Parameterized_MultJoker):
+class Bootstraps(JokersClass):
     """+2 Mult for every $5 you have"""
-    # SUPERCLASS RESPONSABILITY
-    pass
+    def trigger_independent(self):
+        mult = 2 * (self.game_info.money // 5)
+        self.scoreboard.add_mult(mult)
 
 
 #146

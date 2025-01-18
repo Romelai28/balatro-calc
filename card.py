@@ -28,6 +28,7 @@ class Card:
         self.scoreboard = scoreboard
         self.number_of_triggers_on_hand = 1
         self.number_of_triggers_on_held = 1
+        self.hiker_bonus_chips = 0
 
     def isDiamondSuit(self):
         return (self.suit == "Diamond" or self.enhancement.isWildCard()) and not self.enhancement.isStoneCard()
@@ -68,23 +69,43 @@ class Card:
     def isQueenRank(self):
         return self.rank == 'Q'
 
-    def get_base_score(self):
+
+    def upgrade_from_hiker(self):
+        """Mejora la carta por el hiker"""
+        # print("upgrade!")
+        self.hiker_bonus_chips += 5
+
+    def get_chip_value_from_rank(self):
         """ Devuelve el puntaje de la carta basado en su rango """
         return self.scores[self.rank]
 
+    def get_base_score(self):
+        """Si NO es una stone card, sera según su rank. Si es una stone card, siempre será 50."""
+        if self.enhancement.isStoneCard():
+            return self.enhancement.get_base_stone_score()
+        else:
+            return self.get_chip_value_from_rank()
+        
+    def trigger_base_chips(self):
+        """Suma la cantidad de chips base (proveniente del rank o del stone)"""
+        self.scoreboard.add_chips(self.get_base_score())
+
+
+    def trigger_hiker_bonus_chips(self):
+        """Suma la cantidad de chips provenientes de las mejoras del hiker a la carta"""
+        self.scoreboard.add_chips(self.hiker_bonus_chips)
 
 
     def trigger_base_effect(self):
-
-        if self.enhancement.isStoneCard():
-            self.scoreboard.add_chips(self.enhancement.get_base_stone_score())
-        else:
-            self.scoreboard.add_chips(self.get_base_score())
-        # Bonus chips van a caer aca también en un futuro, puedo darle chips extra a una stone card?
+        """3.1 Base effect (Chips): The card activates its base effect, giving the accorded amount of Chips. Bonus chips are included in this value."""
+        # Base score: From rank or from stone card
+        self.trigger_base_chips()
+        # Hiker Bonus chips
+        self.trigger_hiker_bonus_chips()
 
 
     def trigger_modifiers_effect(self):
-        # 3.2 Card modifiers activate in the following order: enhancements, then seals (currently only gold seal), then editions.
+        """3.2 Card modifiers activate in the following order: enhancements, then seals (currently only gold seal), then editions."""
         self.enhancement.trigger_enhancements_on_hand()
         # self.trigger_seals_on_hand()
         self.edition.trigger_any_edition()
@@ -117,7 +138,7 @@ class Card:
     def increment_trigger_count_on_hand(self):
         self.number_of_triggers_on_hand += 1
 
-
+    ######################################################3333333
 
     def trigger_on_held_jokers(self):
         """Aca se le va a bindear comportamiento de los jokers a las cartas para cuando se activen en mano."""
