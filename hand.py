@@ -1,7 +1,7 @@
 from card import Card
-from balatro import Balatro
 
-class HandToPlay(Balatro):
+
+class HandToPlay():
     def __init__(self, cards: list[Card], cards_will_activate: list[bool],
                 constainsHighCard      = True,
                 constainsPair          = False,
@@ -57,6 +57,6 @@ class HandToPlay(Balatro):
     #def score_flush_five(self):
     #    self.scoreboard.add_chips(160 + 50*level_flush_five)
 
-class HeldInHand(Balatro):
+class HeldInHand():
     def __init__(self, cards: list[Card]):
         self.cards = cards

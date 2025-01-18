@@ -36,6 +36,18 @@ class Card:
 
     def isFibonacciRank(self):
         return self.rank in ['2', '3', '5', '8', 'A']
+    
+    def isFaceCard(self):
+        return self.rank in ['J', 'Q', 'K']
+    
+    def isEvenRank(self):
+        return self.rank in ['2', '4', '6', '8', '10']
+    
+    def isOddRank(self):
+        return self.rank in ['A', '3', '5', '7', '9']
+    
+    def isAceRank(self):
+        return self.rank == 'A'
 
     def get_base_score(self):
         """ Devuelve el puntaje de la carta basado en su rango """

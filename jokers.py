@@ -1,10 +1,12 @@
 from hand import HandToPlay
+from hand import HeldInHand
 from score import Score
 from editions import *
 
 class JokersClass:
-    def __init__(self, hand_to_play: HandToPlay, scoreboard: Score, edition: Editions):
+    def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, scoreboard: Score, edition: Editions):
         self.hand_to_play = hand_to_play
+        self.held_in_hand = held_in_hand
         self.scoreboard = scoreboard
         self.edition = edition
 
@@ -57,28 +59,32 @@ class Joker(JokersClass):
 class GreedyJoker(JokersClass):
     """Played cards with Diamond suit give +3 Mult when scored"""
     def bind_on_score(self):
-        self.bind_on_score_generic(lambda card: card.isDiamondSuit, lambda: self.scoreboard.add_mult(3))
+        self.bind_on_score_generic(lambda card: card.isDiamondSuit,
+                                   lambda: self.scoreboard.add_mult(3))
 
 
 # 3
 class LustyJoker(JokersClass):
     """Played cards with Heart suit give +3 Mult when scored"""
     def bind_on_score(self):
-        self.bind_on_score_generic(lambda card: card.isHeartSuit, lambda: self.scoreboard.add_mult(3))
+        self.bind_on_score_generic(lambda card: card.isHeartSuit,
+                                   lambda: self.scoreboard.add_mult(3))
 
 
 # 4
 class WrathfulJoker(JokersClass):
     """Played cards with Spade suit give +3 Mult when scored"""
     def bind_on_score(self):
-        self.bind_on_score_generic(lambda card: card.isSpadeSuit, lambda: self.scoreboard.add_mult(3))
+        self.bind_on_score_generic(lambda card: card.isSpadeSuit,
+                                   lambda: self.scoreboard.add_mult(3))
 
 
 # 5
 class GluttonousJoker(JokersClass):
     """Played cards with Club suit give +3 Mult when scored """
     def bind_on_score(self):
-        self.bind_on_score_generic(lambda card: card.isClubSuit, lambda: self.scoreboard.add_mult(3))
+        self.bind_on_score_generic(lambda card: card.isClubSuit,
+                                   lambda: self.scoreboard.add_mult(3))
 
 
 # 6
@@ -183,12 +189,12 @@ class CreditCard(JokersClass):
 #21
 class CeremonialDagger(JokersClass):
     """When Blind is selected, destroy Joker to the right and permanently add double its sell value to this Mult (Currently +0 Mult)"""
-    def __init__(self, hand_to_play, scoreboard, edition, mult_value = 0):
-        super().__init__(hand_to_play, scoreboard, edition)
-        self.mult_value = mult_value
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_mult_value = 0):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_mult_value = current_mult_value
     
     def trigger_independent(self):
-        self.scoreboard.add_mult(self.mult_value)
+        self.scoreboard.add_mult(self.current_mult_value)
 
 
 #22
@@ -220,33 +226,129 @@ class ChaosTheClown(JokersClass):
 class Fibonacci(JokersClass):
     """Each played Ace, 2, 3, 5, or 8 gives +8 Mult when scored"""
     def bind_on_score(self):
-        self.bind_on_score_generic(lambda card: card.isFibonacciRank, lambda: self.scoreboard.add_mult(8))
+        self.bind_on_score_generic(lambda card: card.isFibonacciRank,
+                                   lambda: self.scoreboard.add_mult(8))
 
 
 #32
+class SteelJoker(JokersClass):
+    """Gives X0.2 Mult for each Steel Card in your full deck"""
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_xmult_value = current_xmult_value
+    
+    def trigger_independent(self):
+        self.scoreboard.times_mult(self.current_xmult_value)
+
 #33
+class ScaryFace(JokersClass):
+    """"Played face cards give +30 Chips when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isFaceCard,
+                                   lambda: self.scoreboard.add_chips(30))
+
+
+
 #34
+
+
 #35
+class DelayedGratification(JokersClass):
+    """Earn $2 per discard if no discards are used by end of the round"""
+    pass
+
+
 #36
 #37
+
+
 #38
+class GrosMichel(JokersClass):
+    """+15 Mult. 1 in 6 chance this is destroyed at the end of round."""
+    def trigger_independent(self):
+        self.scoreboard.add_mult(15)
+
+
 #39
+class EvenSteven(JokersClass):
+    """Played cards with even rank give +4 Mult when scored  (10, 8, 6, 4, 2)"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isEvenRank,
+                                   lambda: self.scoreboard.add_mult(4)) 
+
+
 #40
+class OddTodd(JokersClass):
+    """Played cards with odd rank give +31 Chips when scored (A, 9, 7, 5, 3)"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isOddRank,
+                                   lambda: self.scoreboard.add_chips(31)) 
+
+
 #41
+class Scholar(JokersClass):
+    """Played Aces give +20 Chips and +4 Mult when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isAceRank,
+                                   lambda: (self.scoreboard.add_chips(20),
+                                            self.scoreboard.add_mult(4)))
+
 #42
 #43
 #44
 #45
+
+
 #46
+class Egg(JokersClass):
+    """Gains $3 of sell value at end of round"""
+    pass
+
+
 #47
+
+
 #48
+class Blackboard(JokersClass):
+    """X3 Mult if all cards held in hand are Spade or Club"""
+    def trigger_independent(self):
+        if self.held_in_hand.all_spades_or_clubs():
+            self.scoreboard.times_mult(3)
+
+
 #49
+
+
 #50
+class IceCream(JokersClass):
+    """+100 Chips. -5 Chips for every hand played """
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_chip_value = 100):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_chip_value = current_chip_value
+    
+    def trigger_independent(self):
+        self.scoreboard.add_chips(self.current_chip_value)
+
+
 #51
 #52
 #53
 #54
+
+
 #55
+class Constellation(JokersClass):
+    """This Joker gains X0.1 Mult every time a Planet card is used"""
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_xmult_value = current_xmult_value
+
+    def trigger_independent(self):
+        self.scoreboard.times_mult(self.current_xmult_value)
+        
+
+
+
 #56
 #57
 #58
@@ -342,5 +444,3 @@ class Fibonacci(JokersClass):
 #148
 #149
 #150
-
-
