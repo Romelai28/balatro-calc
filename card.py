@@ -49,6 +49,9 @@ class Card:
     def isAceRank(self):
         return self.rank == 'A'
 
+    def is4or10Rank(self):
+        return self.rank == '4' or self.rank == '10'
+
     def get_base_score(self):
         """ Devuelve el puntaje de la carta basado en su rango """
         return self.scores[self.rank]

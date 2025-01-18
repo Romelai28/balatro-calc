@@ -47,6 +47,34 @@ class JokersClass:
                 card.trigger_on_hand = decorator(card.trigger_on_hand)
 
 
+## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.
+
+class Parameterized_ChipsJoker(JokersClass):
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_chips_value = 0):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_chips_value = current_chips_value
+
+    def trigger_independent(self):
+        self.scoreboard.add_chips(self.current_chips_value)
+
+
+class Parameterized_MultJoker(JokersClass):
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_mult_value = 0):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_mult_value = current_mult_value
+
+    def trigger_independent(self):
+        self.scoreboard.add_mult(self.current_mult_value)
+
+
+class Parameterized_XMultJoker(JokersClass):
+    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
+        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+        self.current_xmult_value = current_xmult_value
+
+    def trigger_independent(self):
+        self.scoreboard.times_mult(self.current_xmult_value)
+
 
 # 1
 class Joker(JokersClass):
@@ -187,14 +215,10 @@ class CreditCard(JokersClass):
 
 
 #21
-class CeremonialDagger(JokersClass):
+class CeremonialDagger(Parameterized_MultJoker):
     """When Blind is selected, destroy Joker to the right and permanently add double its sell value to this Mult (Currently +0 Mult)"""
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_mult_value = 0):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
-        self.current_mult_value = current_mult_value
-    
-    def trigger_independent(self):
-        self.scoreboard.add_mult(self.current_mult_value)
+    # SUPERCLASS RESPONSABILITY
+    pass
 
 
 #22
@@ -231,14 +255,11 @@ class Fibonacci(JokersClass):
 
 
 #32
-class SteelJoker(JokersClass):
+class SteelJoker(Parameterized_XMultJoker):
     """Gives X0.2 Mult for each Steel Card in your full deck"""
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
-        self.current_xmult_value = current_xmult_value
-    
-    def trigger_independent(self):
-        self.scoreboard.times_mult(self.current_xmult_value)
+    # SUPERCLASS RESPONSABILITY
+    pass
+
 
 #33
 class ScaryFace(JokersClass):
@@ -320,14 +341,10 @@ class Blackboard(JokersClass):
 
 
 #50
-class IceCream(JokersClass):
-    """+100 Chips. -5 Chips for every hand played """
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_chip_value = 100):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
-        self.current_chip_value = current_chip_value
-    
-    def trigger_independent(self):
-        self.scoreboard.add_chips(self.current_chip_value)
+class IceCream(Parameterized_ChipsJoker):
+    """+100 Chips. -5 Chips for every hand played"""
+    # SUPERCLASS RESPONSABILITY (OJO ACORDATE DE PONER 100)
+    pass
 
 
 #51
@@ -337,14 +354,10 @@ class IceCream(JokersClass):
 
 
 #55
-class Constellation(JokersClass):
+class Constellation(Parameterized_XMultJoker):
     """This Joker gains X0.1 Mult every time a Planet card is used"""
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
-        self.current_xmult_value = current_xmult_value
-
-    def trigger_independent(self):
-        self.scoreboard.times_mult(self.current_xmult_value)
+    # SUPERCLASS RESPONSABILITY
+    pass
         
 
 
@@ -362,25 +375,85 @@ class FacelessJoker(JokersClass):
 #58
 #59
 #60
+
+
 #61
+class Cavendish(JokersClass):
+    """X3 Mult. 1 in 1000 chance this card is destroyed at the end of round"""
+    def trigger_independent(self):
+        self.scoreboard.times_mult(3)
+
+
 #62
+
+
 #63
+class RedCard(Parameterized_MultJoker):
+    """This Joker gains +3 Mult when any Booster Pack is skipped"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #64
+class Madness(Parameterized_XMultJoker):
+    """When Small Blind or Big Blind is selected, gain X0.5 Mult and destroy a random Joker"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
 #65
 #66
+
+
 #67
+class RiffRaff(JokersClass):
+    """When Blind is selected, create 2 Common Jokers"""
+    pass
+
 #68
 #69
+
+
 #70
+class Hologram(Parameterized_XMultJoker):
+    ### OJO CUANDO IMPLEMENTE ADN Y TENGA ESTA CARTA JUNTO CON ADN ACTIVO.
+    """This Joker gains X0.25 Mult every time a playing card is added to your deck"""    
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #71
+class Vagabond(JokersClass):
+    """Create a Tarot card if hand is played with $4 or less"""
+    pass
+
+
 #72
+
+
 #73
+class Cloud9(JokersClass):
+    """Earn $1 for each 9 in your full deck at end of round"""
+    pass
+
+
 #74
+class Rocket(JokersClass):
+    """Earn $1 at end of round. Payout increases by $2 when Boss Blind is defeated"""
+    pass
+
+
 #75
 #76
 #77
 #78
+
+
 #79
+class GiftCard(JokersClass):
+    """Add $1 of sell value to every Joker and Consumable card at end of round"""
+    pass
+
+
 #80
 #81
 #82
@@ -397,25 +470,107 @@ class FacelessJoker(JokersClass):
 #93
 #94
 #95
+
+
 #96
+class FlashCard(Parameterized_MultJoker):
+    """This Joker gains +2 Mult per reroll in the shop"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #97
+class Popcorn(Parameterized_MultJoker):
+    """+20 Mult. -4 Mult per round played """
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #98
+class SpareTrousers(Parameterized_MultJoker):
+    """This Joker gains +2 Mult if played hand contains a Two Pair"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #99
+
+
 #100
+class Ramen(Parameterized_XMultJoker):
+    """X2 Mult, loses X0.01 Mult per card discarded"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #101
+class WalkieTalkie(Joker):
+    """Each played 10 or 4 gives +10 Chips and +4 Mult when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.is4or10Rank(),
+                                   lambda: (self.scoreboard.add_chips(10),
+                                            self.scoreboard.add_mult(4)))
+
+
 #102
+
+
 #103
+class Castle(Parameterized_ChipsJoker):
+    """This Joker gains +3 Chips per discarded [suit] card, suit changes every round"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #104
+class SmileyFace(JokersClass):
+    """Played face cards give +5 Mult when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isFaceCard,
+                                   lambda: self.scoreboard.add_mult(5))
+
+
 #105
+class Campfire(Parameterized_XMultJoker):
+    """This Joker gains X0.25 Mult for each card sold, resets when Boss Blind is defeated"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #106
 #107
 #108
 #109
+
+
 #110
+class Swashbuckler(Parameterized_MultJoker):
+    """Adds the sell value of all other owned Jokers to Mult"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #111
+class Troubadour(JokersClass):
+    """+2 hand size, 1 hand per round"""
+    pass
+
+
 #112
+class Certificate(JokersClass):
+    """When round begins, add a random playing card with a random seal to your hand"""
+    pass
+
+
 #113
+
 #114
+class Throwback(Parameterized_XMultJoker):
+    """X0.25 Mult for each Blind skipped this run"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #115
 #116
 #117
