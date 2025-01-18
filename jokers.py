@@ -5,11 +5,14 @@ from editions import *
 from game_info import GameInfo
 
 class JokersClass:
-    def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, game_info: GameInfo, scoreboard: Score, edition: Editions):
+    def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, game_info: GameInfo, scoreboard: Score, edition: Editions = None):
         self.hand_to_play = hand_to_play
         self.held_in_hand = held_in_hand
         self.scoreboard = scoreboard
-        self.edition = edition
+        if edition is None:
+            self.edition = BaseEdition(self.scoreboard)
+        else:
+            self.edition = edition
         self.game_info = game_info
 
     def trigger_foil_and_holographic_bonus(self):
@@ -55,7 +58,7 @@ class JokersClass:
 ## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.
 
 class Parameterized_ChipsJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_chips_value = 0):
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition = None, current_chips_value = 0):
         super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_chips_value = current_chips_value
 
@@ -64,7 +67,7 @@ class Parameterized_ChipsJoker(JokersClass):
 
 
 class Parameterized_MultJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_mult_value = 0):
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition = None, current_mult_value = 0):
         super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_mult_value = current_mult_value
 
@@ -73,7 +76,7 @@ class Parameterized_MultJoker(JokersClass):
 
 
 class Parameterized_XMultJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_xmult_value = 1):
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition = None, current_xmult_value = 1):
         super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_xmult_value = current_xmult_value
 
