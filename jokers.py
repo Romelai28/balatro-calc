@@ -2,13 +2,15 @@ from hand import HandToPlay
 from hand import HeldInHand
 from score import Score
 from editions import *
+from game_info import GameInfo
 
 class JokersClass:
-    def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, scoreboard: Score, edition: Editions):
+    def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, game_info: GameInfo, scoreboard: Score, edition: Editions):
         self.hand_to_play = hand_to_play
         self.held_in_hand = held_in_hand
         self.scoreboard = scoreboard
         self.edition = edition
+        self.game_info = game_info
 
     def trigger_foil_and_holographic_bonus(self):
         self.edition.trigger_foil_and_holographic_bonus()
@@ -50,8 +52,8 @@ class JokersClass:
 ## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.
 
 class Parameterized_ChipsJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_chips_value = 0):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_chips_value = 0):
+        super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_chips_value = current_chips_value
 
     def trigger_independent(self):
@@ -59,8 +61,8 @@ class Parameterized_ChipsJoker(JokersClass):
 
 
 class Parameterized_MultJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_mult_value = 0):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_mult_value = 0):
+        super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_mult_value = current_mult_value
 
     def trigger_independent(self):
@@ -68,8 +70,8 @@ class Parameterized_MultJoker(JokersClass):
 
 
 class Parameterized_XMultJoker(JokersClass):
-    def __init__(self, hand_to_play, held_in_hand, scoreboard, edition, current_xmult_value = 1):
-        super().__init__(hand_to_play, held_in_hand, scoreboard, edition)
+    def __init__(self, hand_to_play, held_in_hand, game_info, scoreboard, edition, current_xmult_value = 1):
+        super().__init__(hand_to_play, held_in_hand, game_info, scoreboard, edition)
         self.current_xmult_value = current_xmult_value
 
     def trigger_independent(self):
@@ -222,7 +224,18 @@ class CeremonialDagger(Parameterized_MultJoker):
 
 
 #22
+class Banner(JokersClass):
+    """+30 Chips for each remaining discard"""
+    def trigger_independent(self):
+        self.scoreboard.add_chips(30 * self.game_info.remaining_discards)
+
+
 #23
+class MysticSummit(JokersClass):
+    """+15 Mult when 0 discards remaining"""
+    def trigger_independent(self):
+        if self.game_info.remaining_discards == 0:
+            self.scoreboard.add_mult(15)
 
 
 #24
@@ -455,21 +468,92 @@ class GiftCard(JokersClass):
 
 
 #80
+class TurtleBean(JokersClass):
+    """+5 hand size, reduces by 1 each round"""
+    pass
+
+
 #81
+class Erosion(Parameterized_MultJoker):
+    """+4 Mult for each card below [the deck's starting size] in your full deck"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #82
+
+
 #83
+class MailInRebate(JokersClass):
+    """Earn $5 for each discarded [rank], rank changes every round """
+    pass
+
+
 #84
+class ToTheMoon(JokersClass):
+    """Earn an extra $1 of interest for every $5 you have at end of round"""
+    pass
+
+
 #85
+
+
 #86
+class FortuneTeller(Parameterized_MultJoker):
+    """+1 Mult per Tarot card used this run"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #87
+class Juggler(JokersClass):
+    """+1 hand size"""
+    pass
+
+
 #88
+class Drunkard(JokersClass):
+    """+1 discard each round"""
+    pass
+
+
 #89
+class StoneJoker(Parameterized_ChipsJoker):
+    """Gives +25 Chips for each Stone Card in your full deck"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #90
+class GoldenJoker(JokersClass):
+    """Earn $4 at end of round"""
+    pass
+
+
 #91
+class LuckyCat(Parameterized_XMultJoker):
+    """This Joker gains X0.25 Mult every time a Lucky card successfully triggers"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #92
 #93
+class Bull(Parameterized_ChipsJoker):
+    """+2 Chips for each $1 you have"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
 #94
+class DietCola(JokersClass):
+    """Sell this card to create a free Double Tag"""
+    pass
+
+
 #95
+class TradingCard(JokersClass):
+    """If first discard of round has only 1 card, destroy it and earn $3"""
+    pass
 
 
 #96
