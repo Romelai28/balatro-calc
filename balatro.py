@@ -12,7 +12,7 @@ class Balatro:
 
         # Fase 2.5: Blindeo el comportamiento extra que le dan los jokers a las cartas. (on_score y on_held) [SOLO BLINDEA, NO HACE NADA]
         self.jokers_to_play.bind_on_score()
-
+        self.jokers_to_play.add_retriggers()
 
         # Fase 3:
         self.hand_to_play.trigger_playing_hand()

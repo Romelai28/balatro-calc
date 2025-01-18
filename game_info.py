@@ -3,3 +3,6 @@ class GameInfo:
         self.remaining_hands = remaining_hands
         self.remaining_discards = remaining_discards
         self.joker_slots = joker_slots
+    
+    def isFinalHand(self):
+        return self.remaining_hands == 1

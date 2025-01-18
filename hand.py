@@ -37,10 +37,17 @@ class HandToPlay():
         return len(self.cards)
 
     def trigger_playing_hand(self):
+        """Triggea todas las veces necesarias las cartas que se van a activar"""
         for i in range(self.playingHandSize()):
             if self.cards_will_activate[i]:
-                self.cards[i].trigger_on_hand()
+                self.trigger_on_hand(self.cards[i])
 
+    def trigger_on_hand(self, card: Card):
+        """Trigguea todas las veces necesaria la carta pasada por argumento"""
+        for _ in range(card.number_of_triggers):
+            card.trigger_one_time_on_hand()
+
+    
     def card_that_will_score(self):
         res = []
         for i in range(self.playingHandSize()):

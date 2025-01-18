@@ -30,6 +30,9 @@ class JokersClass:
     def trigger_independent(self):
         pass
 
+    def add_retriggers(self):
+        pass
+
     def passive(self):
         pass
 
@@ -46,7 +49,7 @@ class JokersClass:
                         codigo_a_agregar()
                     return wrapper
 
-                card.trigger_on_hand = decorator(card.trigger_on_hand)
+                card.trigger_on_scored_jokers = decorator(card.trigger_on_scored_jokers)
 
 
 ## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.
@@ -205,7 +208,13 @@ class HalfJoker(JokersClass):
             self.scoreboard.add_mult(20)
 
 
-#17 TODO: agregar un contador de cuantos joker slot tengo.
+#17
+class JokerStencil(Parameterized_XMultJoker):
+    """X1 Mult for each empty Joker slot. Joker Stencil included"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #18
 #19
 
@@ -249,7 +258,15 @@ class MarbleJoker(JokersClass):
 
 #26
 #27
+
 #28
+class Dusk(JokersClass):
+    """Retrigger all played cards in final hand of the round"""
+    def add_retriggers(self):
+        if self.game_info.isFinalHand():
+            for card in self.hand_to_play.card_that_will_score():
+                card.increment_trigger_count()
+
 #29
 
 
@@ -293,6 +310,14 @@ class DelayedGratification(JokersClass):
 
 
 #36
+class Hack(JokersClass):
+    """Retrigger each played 2, 3, 4, or 5"""
+    def add_retriggers(self):
+        for card in self.hand_to_play.card_that_will_score():
+            if card.is234or5Rank(): 
+                card.increment_trigger_count()
+
+
 #37
 
 
@@ -624,7 +649,14 @@ class Campfire(Parameterized_XMultJoker):
 #106
 #107
 #108
+
+
 #109
+class SockAndBuskin(JokersClass):
+    def add_retriggers(self):
+        for card in self.hand_to_play.card_that_will_score():
+            if card.isFaceCard():
+                card.increment_trigger_count()
 
 
 #110
@@ -656,6 +688,13 @@ class Throwback(Parameterized_XMultJoker):
 
 
 #115
+class HangingChad(JokersClass):
+    """Retrigger first played card used in scoring 2 additional times"""
+    def add_retriggers(self):
+        first_card = self.hand_to_play.card_that_will_score()[0]
+        first_card.increment_trigger_count()
+
+
 #116
 #117
 

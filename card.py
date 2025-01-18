@@ -21,6 +21,7 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.scoreboard = scoreboard  # Pasamos la instancia de Balatro para acceder a los chips
+        self.number_of_triggers = 1
 
     def isDiamondSuit(self):
         return self.suit == "Diamond"
@@ -46,6 +47,9 @@ class Card:
     def isOddRank(self):
         return self.rank in ['A', '3', '5', '7', '9']
     
+    def is234or5Rank(self):
+        return self.rank in ['2', '3', '4', '5']
+    
     def isAceRank(self):
         return self.rank == 'A'
 
@@ -66,11 +70,21 @@ class Card:
         self.scoreboard.add_chips(self.get_base_score())
         #  Bonus chips van a caer aca también en un futuro
 
-    def trigger_on_hand(self):
+    def trigger_on_scored_jokers(self):
+        """Aca se le va a bindear comportamiento de los jokers a las cartas para cuando puntueen."""
+        pass
+
+    def trigger_one_time_on_hand(self):
         """ Llama al método de agregar chips a la instancia de Balatro """
         # Va a tener 3 fases:
         # Base effect (chips)
         self.trigger_base_effect()
         # Card modifiers
         # On scored jokers.
+        self.trigger_on_scored_jokers()
         # Esto se repite la cantidad de triggers, (esto va por afuera, se va a llamar varias veces a esta funcion)
+
+    def increment_trigger_count(self):
+        self.number_of_triggers += 1
+
+    
