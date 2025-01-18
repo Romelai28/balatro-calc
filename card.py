@@ -50,7 +50,13 @@ class Card:
         return self.rank == 'A'
 
     def is4or10Rank(self):
-        return self.rank == '4' or self.rank == '10'
+        return self.rank in ['4', '10']
+    
+    def isKingRank(self):
+        return self.rank == 'K'
+    
+    def isQueenRank(self):
+        return self.rank == 'Q'
 
     def get_base_score(self):
         """ Devuelve el puntaje de la carta basado en su rango """

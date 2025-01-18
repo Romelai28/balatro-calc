@@ -574,36 +574,173 @@ class Throwback(Parameterized_XMultJoker):
 #115
 #116
 #117
+
+
 #118
+class Arrowhead(JokersClass):
+    """Played cards with Spade suit give +50 Chips when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isSpadeSuit,
+                                   lambda: self.scoreboard.add_chips(50))
+
+
 #119
+class OnyxAgate(JokersClass):
+    """Played cards with Club suit icon Club suit give +7 Mult when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isClubSuit,
+                                   lambda: self.scoreboard.add_mult(7))
+
+
 #120
+class GlassJoker(Parameterized_XMultJoker):
+    """This Joker gains X0.75 Mult for every Glass Card that is destroyed"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #121
+class Showman(JokersClass):
+    """Joker, Tarot, Planet, and Spectral cards may appear multiple times"""
+    pass
+
+
 #122
 #123
 #124
+
+
 #125
+class MerryAndy(JokersClass):
+    """+3 discards each round, -1 hand size"""
+    pass
+
+
 #126
 #127
 #128
 #129
+
+
 #130
+class HitTheRoad(Parameterized_XMultJoker):
+    """This Joker gains X0.5 Mult for every Jack discarded this round"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #131
+class TheDuo(JokersClass):
+    """X2 Mult if played hand contains a Pair"""
+    def trigger_independent(self):
+        if self.hand_to_play.constainsPair:
+            self.scoreboard.times_mult(2)
+
+
 #132
+class TheTrio(JokersClass):
+    """X3 Mult if played hand contains a Three of a Kind"""
+    def trigger_independent(self):
+        if self.hand_to_play.constainsThreeOfAKind:
+            self.scoreboard.times_mult(3)
+
+
 #133
+class TheFamily(JokersClass):
+    """X4 Mult if played hand contains a Four of a Kind"""
+    def trigger_independent(self):
+        if self.hand_to_play.constainsFourOfAKind:
+            self.scoreboard.times_mult(4)
+
+
 #134
+class TheOrder(JokersClass):
+    """X3 Mult if played hand contains a Straight"""
+    def trigger_independent(self):
+        if self.hand_to_play.constainsStraight:
+            self.scoreboard.times_mult(3)
+
+
 #135
+class TheTribe(JokersClass):
+    """X2 Mult if played hand contains a Flush"""
+    def trigger_independent(self):
+        if self.hand_to_play.constainsFlush:
+            self.scoreboard.times_mult(2)
+
+
 #136
+class Stuntman(JokersClass):
+    """+250 Chips, -2 hand size."""
+    def trigger_independent(self):
+        self.scoreboard.add_chips(250)
+
+
 #137
+class InvisibleJoker(JokersClass):
+    """After 2 rounds, sell this card to Duplicate a random Joker"""
+    pass
+
+
 #138
+
+
 #139
+class Satellite(JokersClass):
+    """Earn $1 at end of round per unique Planet card used this run"""
+    pass
+
+
 #140
 #141
+
+
 #142
+class Cartomancer(JokersClass):
+    """Create a Tarot card when Blind is selected"""
+    pass
+
+
 #143
+class Astronomer(JokersClass):
+    """All Planet cards and Celestial Packs in the shop are free"""
+    pass
+
+
 #144
+class BurntJoker(JokersClass):
+    """Upgrade the level of the first discarded poker hand each round"""
+    pass
+
+
 #145
+class Bootstraps(Parameterized_MultJoker):
+    """+2 Mult for every $5 you have"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #146
+class Canio(Parameterized_XMultJoker):
+    """This Joker gains X1 Mult when a face card is destroyed """
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #147
+class Triboulet(JokersClass):
+    """Played Kings and Queens each give X2 Mult when scored"""
+    def bind_on_score(self):
+        self.bind_on_score_generic(lambda card: card.isKingRank() or card.isQueenRank(),
+                                   lambda: self.scoreboard.times_mult(2))    
+
+
 #148
+class Yorick(Parameterized_XMultJoker):
+    """This Joker gains X1 Mult every 23 [23] cards discarded"""
+    # SUPERCLASS RESPONSABILITY
+    pass
+
+
 #149
 #150
