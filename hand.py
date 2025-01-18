@@ -16,6 +16,7 @@ class HandToPlay():
                 constainsFlushHouse    = False,
                 constainsFlushFive     = False,
                 ):
+        
         self.cards = cards
 
         self.constainsHighCard      = constainsHighCard

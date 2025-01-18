@@ -3,26 +3,24 @@ from hand import HeldInHand
 from score import Score
 from editions import *
 from game_info import GameInfo
+from auxiliar import assign_if_none, bind_generic
 
 class JokersClass:
     def __init__(self, hand_to_play: HandToPlay, held_in_hand: HeldInHand, game_info: GameInfo, scoreboard: Score, edition: Editions = None):
         self.hand_to_play = hand_to_play
         self.held_in_hand = held_in_hand
         self.scoreboard = scoreboard
-        if edition is None:
-            self.edition = BaseEdition(self.scoreboard)
-        else:
-            self.edition = edition
+        self.edition = assign_if_none(edition, BaseEdition(scoreboard))
         self.game_info = game_info
 
-    def trigger_foil_and_holographic_bonus(self):
-        self.edition.trigger_foil_and_holographic_bonus()
+    def trigger_foil_or_holographic_bonus(self):
+        self.edition.trigger_foil_or_holographic_bonus()
 
     def trigger_polychrome_bonus(self):
         self.edition.trigger_polychrome_bonus()
     
-    def on_played(self):
-        pass
+    #def on_played(self):
+    #    pass
 
     def bind_on_score(self):
         pass
@@ -36,38 +34,22 @@ class JokersClass:
     def add_retriggers(self):
         pass
 
-    def passive(self):
-        pass
+    #def passive(self):
+    #    pass
 
-    
-    def bind_on_score_generic(self, condition, codigo_a_agregar):
-        for card in self.hand_to_play.card_that_will_score():
-            if condition(card):
 
-                def decorator(old_method_trigger_on_hand):
-                    def wrapper():
-                        # Lineas antes
-                        old_method_trigger_on_hand()
-                        # Lineas dps
-                        codigo_a_agregar()
-                    return wrapper
+    def bind_on_score_generic(self, condition, additional_code):
+        bind_generic(target_objects=self.hand_to_play.card_that_will_score(),
+                     condition=condition,
+                     additional_code=additional_code,
+                     trigger_method_name='trigger_on_scored_jokers')
 
-                card.trigger_on_scored_jokers = decorator(card.trigger_on_scored_jokers)
-    
 
-    def bind_on_held_generic(self, condition, codigo_a_agregar):
-        for card in self.held_in_hand.cards:
-            if condition(card):
-
-                def decorator(old_method_trigger_on_held):
-                    def wrapper():
-                        # Lineas antes
-                        old_method_trigger_on_held()
-                        # Lineas dps
-                        codigo_a_agregar()
-                    return wrapper
-
-                card.trigger_on_held_jokers = decorator(card.trigger_on_held_jokers)
+    def bind_on_held_generic(self, condition, additional_code):
+        bind_generic(target_objects=self.held_in_hand.cards,
+                     condition=condition,
+                     additional_code=additional_code,
+                     trigger_method_name='trigger_on_held_jokers')
 
 
 ## TODO: eliminar codigo repetido, me falta una abstracción parametrizedjoker class, apply_value metodo.

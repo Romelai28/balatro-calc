@@ -7,6 +7,9 @@ class Enhancement:
     def trigger_bonus_bonus(self):
         pass
 
+    def trigger_mult_bonus(self):
+        pass
+
     def isWildCard(self):
         return False
 
@@ -18,6 +21,13 @@ class Enhancement:
 
     def isStoneCard(self):
         return False
+
+
+    def trigger_enhancements_on_hand(self):
+        self.trigger_bonus_bonus()
+        self.trigger_mult_bonus()
+        self.trigger_glass_bonus()
+        # Falta la lucky
 
 
 class BaseCard(Enhancement):
@@ -53,6 +63,9 @@ class StoneCard(Enhancement):
     # Card always scores
     def isStoneCard(self):
         return True
+
+    def get_base_stone_score(self):
+        return 50
 
 
 class GoldCard(Enhancement):

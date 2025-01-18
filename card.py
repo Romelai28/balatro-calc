@@ -1,5 +1,7 @@
 from score import Score
 from enhancements import *
+from editions import *
+from auxiliar import assign_if_none
 
 class Card:
     scores = {
@@ -18,13 +20,11 @@ class Card:
         'A': 11
     }
 
-    def __init__(self, suit: str, rank: str, scoreboard: Score, enhancement: Enhancement = None):
+    def __init__(self, suit: str, rank: str, scoreboard: Score, enhancement: Enhancement = None, edition: Editions = None):
         self.suit = suit
         self.rank = rank
-        if enhancement is None:
-            self.enhancement = BaseCard(scoreboard)
-        else:
-            self.enhancement = enhancement
+        self.enhancement = assign_if_none(enhancement, BaseCard(scoreboard))
+        self.edition = assign_if_none(edition, BaseEdition(scoreboard))
         self.scoreboard = scoreboard
         self.number_of_triggers_on_hand = 1
         self.number_of_triggers_on_held = 1
@@ -75,8 +75,24 @@ class Card:
 
 
     def trigger_base_effect(self):
-        self.scoreboard.add_chips(self.get_base_score())
-        #  Bonus chips van a caer aca también en un futuro
+
+        if self.enhancement.isStoneCard():
+            self.scoreboard.add_chips(self.enhancement.get_base_stone_score())
+        else:
+            self.scoreboard.add_chips(self.get_base_score())
+        # Bonus chips van a caer aca también en un futuro, puedo darle chips extra a una stone card?
+
+
+    def trigger_modifiers_effect(self):
+        # 3.2 Card modifiers activate in the following order: enhancements, then seals (currently only gold seal), then editions.
+        self.enhancement.trigger_enhancements_on_hand()
+        # self.trigger_seals_on_hand()
+        self.edition.trigger_any_edition()
+
+
+    def trigger_seals_on_hand():
+        # TODO (gold seal)
+        pass
 
     def trigger_on_scored_jokers(self):
         """Aca se le va a bindear comportamiento de los jokers a las cartas para cuando puntueen."""
@@ -86,7 +102,8 @@ class Card:
         # 3.1 Base effect (chips)
         self.trigger_base_effect()
 
-        # 3.2 Card modifiers (only gold seal)
+        # 3.2 Card modifiers activate in the following order: enhancements, then seals (currently only gold seal), then editions.
+        self.trigger_modifiers_effect()
 
         # 3.3 On scored jokers.
         self.trigger_on_scored_jokers()

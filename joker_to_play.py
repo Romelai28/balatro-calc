@@ -7,7 +7,7 @@ class JokerToPlay:
 
     def trigger_joker_editions_and_independents_jokers(self):
         for joker in self.jokers_to_play:
-            joker.trigger_foil_and_holographic_bonus()
+            joker.trigger_foil_or_holographic_bonus()
             joker.trigger_independent()
             # falta el baseball card
             joker.trigger_polychrome_bonus()
