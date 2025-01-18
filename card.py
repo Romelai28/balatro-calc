@@ -66,6 +66,8 @@ class Card:
         """ Devuelve el puntaje de la carta basado en su rango """
         return self.scores[self.rank]
 
+
+
     def trigger_base_effect(self):
         self.scoreboard.add_chips(self.get_base_score())
         #  Bonus chips van a caer aca también en un futuro
@@ -75,16 +77,19 @@ class Card:
         pass
 
     def trigger_one_time_on_hand(self):
-        """ Llama al método de agregar chips a la instancia de Balatro """
-        # Va a tener 3 fases:
-        # Base effect (chips)
+        # 3.1 Base effect (chips)
         self.trigger_base_effect()
-        # Card modifiers
-        # On scored jokers.
+
+        # 3.2 Card modifiers (only gold seal)
+
+        # 3.3 On scored jokers.
         self.trigger_on_scored_jokers()
-        # Esto se repite la cantidad de triggers, (esto va por afuera, se va a llamar varias veces a esta funcion)
+
+
+    def trigger_on_hand(self):
+        """Trigguea todas las veces necesaria"""
+        for _ in range(self.number_of_triggers):
+            self.trigger_one_time_on_hand()
 
     def increment_trigger_count(self):
         self.number_of_triggers += 1
-
-    

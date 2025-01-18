@@ -15,7 +15,14 @@ class Balatro:
         self.jokers_to_play.add_retriggers()
 
         # Fase 3:
-        self.hand_to_play.trigger_playing_hand()
+        self.hand_to_play.played_cards_scoring()
+
+        # Fase 4:
+        # Enhancement (Steel card)
+
+        # On Held Jokers
+
+        # Retriggers
 
         # Fase 5: Joker editions and independent jokers
         self.jokers_to_play.trigger_joker_editions_and_independents_jokers()
